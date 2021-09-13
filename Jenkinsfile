@@ -9,7 +9,7 @@ pipeline {
       stage('checkout') {
            steps {
              
-                git branch: 'master', url: 'https://github.com/Assistantit/testJavaAppCICD.git'
+                git branch: 'main', url: 'https://github.com/Assistantit/testJavaAppCICD.git'
              
           }
         }

@@ -39,8 +39,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-			
-		<plugins>
+
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-war-plugin</artifactId>
@@ -48,9 +47,8 @@
               <configuration>
                 <failOnMissingWebXml>false</failOnMissingWebXml>
               </configuration>
-            </plugin>
-        </plugins>
-			
+            </plugin>	
+            	
             <plugin>
             	<groupId>org.jolokia</groupId>
                 <artifactId>docker-maven-plugin</artifactId>

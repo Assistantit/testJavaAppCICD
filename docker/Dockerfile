@@ -1,2 +1,9 @@
-FROM tomcat
-ADD deploy /usr/local/tomcat/webapps
+FROM tomcat:latest
+
+LABEL maintainer="Griml"
+
+ADD ./target/helloworld.war /usr/local/tomcat/webapps/
+
+EXPOSE 8080
+
+CMD ["catalina.sh", "run"]

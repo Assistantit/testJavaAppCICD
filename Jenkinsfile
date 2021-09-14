@@ -1,8 +1,8 @@
 pipeline {
   environment {
     BRANCH_NAME="main"
-    Jenkinsfile_repo_git = "https://github.com/Assistantit/testJavaAppCICD.git"
-    Project_repo_git = "https://github.com/Assistantit/testJavaAppCICD.git"
+    Jenkinsfile_repo_git = "https://github.com/Assistantit/testJavaAppCICD"
+    Project_repo_git = "https://github.com/Assistantit/testJavaAppCICD"
     registry = "griml/javahillelwebapp"
     registryCredential = 'dockerhub'
     dockerImage = ''

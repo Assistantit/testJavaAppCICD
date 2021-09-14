@@ -1,10 +1,10 @@
 pipeline {
   environment {
-    BRANCH_NAME="develop"
-    Jenkinsfile_repo_git = "https://github.com/your_repo.git"
-    Project_repo_git = "https://github.com/your_repo_image.git"
-    registry = "devops/docker-test"
-    registryCredential = 'dockerhubCredTEST'
+    BRANCH_NAME="main"
+    Jenkinsfile_repo_git = "https://github.com/Assistantit/testJavaAppCICD.git"
+    Project_repo_git = "https://github.com/Assistantit/testJavaAppCICD.git"
+    registry = "griml/javahillelwebapp"
+    registryCredential = 'dockerhub'
     dockerImage = ''
   }
   agent any
@@ -12,15 +12,14 @@ pipeline {
     stage('Cloning Git') {
       steps {
         //Cloning repo project
-        git credentialsId: 'gitHubCred', url: "${Project_repo_git}", branch: "${BRANCH_NAME}" 
-        sh 'ls -la /var/jenkins_home/workspace/'
+        git credentialsId: 'github_connection', url: "${Project_repo_git}", branch: "${BRANCH_NAME}" 
         
       }
     }
     stage('Building image') {
       steps{
         script {
-          dockerImage = docker.build (registry + ":$BUILD_NUMBER", "-f ./Docker/Dockerfile ./Docker")
+          dockerImage = docker.build (registry + ":$BUILD_NUMBER", "-f ./docker/Dockerfile ./docker")
         }
       }
     }

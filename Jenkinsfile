@@ -1,59 +1,42 @@
 pipeline {
-    agent any
-	
-	  tools
-    {
-       maven "Maven"
-    }
- stages {
-      stage('checkout') {
-           steps {
-             
-                git branch: 'main', url: 'https://github.com/Assistantit/testJavaAppCICD.git'
-             
-          }
-        }
-	 stage('Execute Maven') {
-           steps {
-             
-                sh 'mvn package'             
-          }
-        }
+  environment {
+    BRANCH_NAME="develop"
+    Jenkinsfile_repo_git = "https://github.com/your_repo.git"
+    Project_repo_git = "https://github.com/your_repo_image.git"
+    registry = "devops/docker-test"
+    registryCredential = 'dockerhubCredTEST'
+    dockerImage = ''
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        //Cloning repo project
+        git credentialsId: 'gitHubCred', url: "${Project_repo_git}", branch: "${BRANCH_NAME}" 
+        sh 'ls -la /var/jenkins_home/workspace/'
         
-
-     stage('Docker Build and Tag') {
-           steps {
-              
-                sh 'docker build -t javahillelwebapp:latest .' 
-                sh 'docker tag JavaHillelwebapp griml/javahillelwebapp:latest'
-                //sh 'docker tag samplewebapp griml/javahillelwebapp:$BUILD_NUMBER'
-               
-                 }
-        }
-     
-     stage('Publish image to Docker Hub') {
-          
-            steps {
-                  withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
-                  sh  'docker push griml/javahillelwebapp:latest'
-                  //sh 'docker tag samplewebapp griml/JavaHillelwebapp:$BUILD_NUMBER' 
-                }
-                  
-            }
-        }
-     
-#     stage('Run Docker container on Jenkins Agent') {
-#             
-#            steps {
-#                sh "docker run -d -p 8003:8080 griml/javahillelwebapp"
-#                }
-#        }
-#     stage('Run Docker container on remote hosts') {
-#             
-#            steps {
-#                sh "docker -H ssh://jenkins@172.31.28.25 run -d -p 8003:8080 griml/javahillelwebapp"
-# 
-#            }
-#       }
+      }
     }
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build (registry + ":$BUILD_NUMBER", "-f ./Docker/Dockerfile ./Docker")
+        }
+      }
+    }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
+  }
 }
